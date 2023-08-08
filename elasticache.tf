@@ -39,8 +39,7 @@ resource "aws_elasticache_parameter_group" "this" {
 # # ---------------------------------------------------------------------------------------------------------------------#
 resource "aws_elasticache_replication_group" "this" {
   for_each                      = toset(var.redis["name"])
-  description                   = "Replication group for ${var.app["domain"]} ${each.key} backend"
-  num_cache_clusters            = var.redis["num_cache_clusters"]
+  replication_group_description = "Replication group for ${var.app["domain"]} ${each.key} backend"
   at_rest_encryption_enabled    = var.redis["at_rest_encryption_enabled"]
   engine                        = "redis"
   engine_version                = var.redis["engine_version"]
