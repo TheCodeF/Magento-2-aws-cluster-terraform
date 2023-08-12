@@ -8,11 +8,11 @@
 # # ---------------------------------------------------------------------------------------------------------------------#
 resource "aws_codestarconnections_connection" "github" {
   for_each      = var.app["install"] == "enabled" ? toset(["enabled"]) : []
-  name          = "${local.project}-codestar-connection"
+  name          = "${local.project}-codestar-conn"
   provider_type = "GitHub"
   
   tags = {
-     Name       = "${local.project}-codestar-connection"
+     Name       = "${local.project}-codestar-conn"
   }
 }
 # # ---------------------------------------------------------------------------------------------------------------------#
