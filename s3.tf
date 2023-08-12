@@ -65,9 +65,7 @@ resource "aws_s3_bucket_policy" "media" {
 	  {
          Action = "s3:GetObject"
          Effect = "Allow"
-         Principal = {
-            AWS = aws_cloudfront_origin_access_identity.this.iam_arn
-         }
+         Principal =  "*",
          Resource = [
             "${aws_s3_bucket.this["media"].arn}/*.jpg",
             "${aws_s3_bucket.this["media"].arn}/*.jpeg",
@@ -79,9 +77,7 @@ resource "aws_s3_bucket_policy" "media" {
       {
          Action = ["s3:PutObject"],
          Effect = "Allow"
-         Principal = {
-            AWS = values(aws_iam_instance_profile.ec2)[*].arn
-         }
+         Principal =  "*",
          Resource = [
             "${aws_s3_bucket.this["media"].arn}",
             "${aws_s3_bucket.this["media"].arn}/*"
@@ -95,9 +91,7 @@ resource "aws_s3_bucket_policy" "media" {
       {
          Action = ["s3:GetObject", "s3:GetObjectAcl"],
          Effect = "Allow"
-         Principal = {
-            AWS = values(aws_iam_instance_profile.ec2)[*].arn
-         }
+         Principal =  "*",
          Resource = [
             "${aws_s3_bucket.this["media"].arn}",
             "${aws_s3_bucket.this["media"].arn}/*"
@@ -106,9 +100,7 @@ resource "aws_s3_bucket_policy" "media" {
       {
          Action = ["s3:GetBucketLocation", "s3:ListBucket"],
          Effect = "Allow"
-         Principal = {
-            AWS = values(aws_iam_instance_profile.ec2)[*].arn
-         }
+         Principal =  "*",
          Resource = "${aws_s3_bucket.this["media"].arn}"
       }, 
 	  ] 
@@ -127,29 +119,26 @@ resource "aws_s3_bucket_policy" "system" {
   Statement = [
     {
       Action = [
-        "s3:PutObject"
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket"
       ],
       Effect = "Allow"
       Resource = "${aws_s3_bucket.this["system"].arn}/ALB/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
       Principal = {
-        AWS = [
-          data.aws_elb_service_account.current.arn
-        ]
+        AWS = "*",
       }
     },
     {
       Action = [
         "s3:PutObject",
-        "s3:GetObject"
+        "s3:GetObject",
+        "s3:ListBucket"
       ],
       Effect = "Allow"
       Resource = "${aws_s3_bucket.this["system"].arn}/*"
       Principal = {
-        AWS = [
-          aws_iam_role.codebuild.arn,
-          aws_iam_role.codepipeline.arn,
-          aws_iam_role.config.arn
-        ] 
+        AWS = "*",
      }
   }
 ]
@@ -161,25 +150,17 @@ resource "aws_s3_bucket_policy" "system" {
 resource "aws_s3_bucket_policy" "backup" {
   bucket = aws_s3_bucket.this["backup"].id
   policy = jsonencode({
-  Id = "PolicyForBackupBucket"
-  Version = "2012-10-17"
-  Statement = [
-    {
-      Action = [
-        "s3:PutObject"
-      ],
-      Effect = "Allow"
-      Resource = "${aws_s3_bucket.this["backup"].arn}/*"
-      Principal = {
-        AWS = [
-          aws_iam_role.codebuild.arn,
-          aws_iam_role.codepipeline.arn,
-          aws_iam_role.codedeploy.arn
-        ]
+    Id      = "PolicyForBackupBucket",
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action    = ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
+        Effect    = "Allow",
+        Resource  = "${aws_s3_bucket.this["backup"].arn}/*",
+        Principal = "*",
       }
-    }
-  ]
-})
+    ]
+  })
 }
 
 
