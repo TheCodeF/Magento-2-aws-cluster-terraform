@@ -57,7 +57,7 @@ resource "aws_ssm_parameter" "cloudwatch_agent_config" {
       }
 }
 EOF
-
+  overwrite = true
   tags = {
     Name = "amazon-cloudwatch-agent-${each.key}.json"
   }
