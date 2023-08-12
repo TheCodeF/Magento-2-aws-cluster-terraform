@@ -40,16 +40,17 @@ variable "ec2" {
 variable "app" {
   description      = "Map application params | Magento 2"
   default          = {
-    source_repo      = "magenx/Magento-2"
+    install          = "enabled"
+    source_repo      = "TheCodeF/magento2-elaraby"
     app_version      = "2"
     cidr_block       = "172.30.0.0/16"
     brand            = "magenx"
-    domain           = "magenx.org"
-    admin_email      = "admin@magenx.org"
+    domain           = "beinclinic.com"
+    admin_email      = "info@beinclinic.com"
     admin_login      = "admin"
     admin_firstname  = "Hereis"
     admin_lastname   = "Myname"
-    source           = "https://github.com/magenx/Magento-2.git"
+    source           = "https://github.com/TheCodeF/magento2-elaraby.git"
     language         = "en_US"
     currency         = "EUR"
     timezone         = "UTC"
@@ -58,8 +59,8 @@ variable "app" {
     linux_packages   = "nfs-common unzip git patch python3-pip acl attr imagemagick snmp"
     exclude_linux_packages = "apache2* *apcu-bc"
     volume_size      = "50"
-    composer_user    = "8c681734f22763b50ea0c29dff9e7af2"
-    composer_pass    = "02dfee497e669b5db1fe1c8d481d6974"
+    composer_user    = "0aeb0badaa9a497c326a8ce2cd4fc0f4"
+    composer_pass    = "456281bcfae63700c4588e5ce7b5aaa7"
   }
 }
 
