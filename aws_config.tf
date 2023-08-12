@@ -31,6 +31,10 @@ resource "aws_config_config_rule" "this" {
 resource "aws_config_configuration_recorder" "this" {
   name     = "${local.project}-recorder"
   role_arn = aws_iam_role.config.arn
+  recording_group {
+    all_supported = true
+    include_global_resource_types = true
+  }
 }
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Create AWS Config recorder status
@@ -55,21 +59,18 @@ resource "aws_config_delivery_channel" "this" {
 resource "aws_iam_role" "config" {
   name = "${local.project}-aws-config"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "config.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Create AWS Config role policy
