@@ -86,7 +86,7 @@ variable "rds" {
     storage_type           = "gp2"
     storage_encrypted      = true
     engine                 = "mariadb"
-    engine_version         = "10.5.12"
+    engine_version         = "10.5"
     family                 = "mariadb10.5"
     instance_class         = "db.m6g.large"
     skip_final_snapshot    = true
