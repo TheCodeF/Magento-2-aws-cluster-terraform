@@ -30,7 +30,7 @@ provider "aws" {
   default_tags {
    tags = {
    Managed      = "terraform"
-   Config       = "magenx"
+   Config       = "alaraby"
    Environment  = "development"
   }
  }
