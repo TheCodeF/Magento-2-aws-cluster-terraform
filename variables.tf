@@ -2,7 +2,7 @@
 
 locals {
    # Create global project name to be assigned to all resources
-   project = lower("${var.app["brand"]}-${random_string.this["project"].result}")
+   project = lower("${var.app["brand"]}-proj")
 }
 
 variable "password" {
@@ -40,17 +40,17 @@ variable "ec2" {
 variable "app" {
   description      = "Map application params | Magento 2"
   default          = {
-    install          = "enabled"
-    source_repo      = "TheCodeF/magento2-elaraby"
+    install          = "disabled"
+    source_repo      = "agenx/Magento-2"
     app_version      = "2"
     cidr_block       = "172.30.0.0/16"
-    brand            = "magenx"
+    brand            = "alaraby"
     domain           = "beinclinic.com"
     admin_email      = "info@beinclinic.com"
     admin_login      = "admin"
-    admin_firstname  = "Hereis"
-    admin_lastname   = "Myname"
-    source           = "https://github.com/TheCodeF/magento2-elaraby.git"
+    admin_firstname  = "Mahmoud"
+    admin_lastname   = "Almasri"
+    source           = "https://github.com/agenx/Magento-2.git"
     language         = "en_US"
     currency         = "EUR"
     timezone         = "UTC"
