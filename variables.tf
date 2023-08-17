@@ -249,3 +249,8 @@ variable "az_number" {
     g = 6
   }
 }
+
+variable "allowed_ip_addresses" {
+  type    = list(string)
+  default = ["184.169.173.113/32", "157.241.11.59/32", "88.239.132.234/32"]
+}
