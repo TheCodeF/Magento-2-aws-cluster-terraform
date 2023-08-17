@@ -110,14 +110,14 @@ data "aws_ami" "distro" {
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Get AMI image_id generated from manifest with external data script
 # # ---------------------------------------------------------------------------------------------------------------------#
-data "external" "packer" {
-   depends_on = [null_resource.packer]
-   for_each = var.ec2
-   program = ["/bin/bash", "${abspath(path.root)}/packer/ami_id.sh"] 
-   query = {
-    INSTANCE_NAME = each.key
-  }
- }
+# data "external" "packer" {
+#    depends_on = [null_resource.packer]
+#    for_each = var.ec2
+#    program = ["/bin/bash", "${abspath(path.root)}/packer/ami_id.sh"] 
+#    query = {
+#     INSTANCE_NAME = each.key
+#   }
+#  }
 # # ---------------------------------------------------------------------------------------------------------------------#
 #  Get IP address where Packer Builder is running to add to EC2 security group to allow ssh access
 # # ---------------------------------------------------------------------------------------------------------------------#
