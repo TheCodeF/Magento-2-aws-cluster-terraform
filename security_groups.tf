@@ -217,6 +217,17 @@ resource "aws_security_group" "rds" {
       protocol         = "tcp"
       security_groups  = [aws_security_group.ec2.id]
     }
+    
+  dynamic "ingress" {
+    for_each = var.allowed_ip_addresses
+    content {
+      description      = "Allow inbound traffic from specific IP"
+      from_port        = 3306
+      to_port          = 3306
+      protocol         = "tcp"
+      cidr_blocks      = [ingress.value]
+    }
+  }
 
   tags = {
     Name = "${local.project}-rds-sg"
