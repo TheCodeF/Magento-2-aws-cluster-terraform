@@ -54,12 +54,12 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 # Block public access acl for internal S3 buckets
 # # ---------------------------------------------------------------------------------------------------------------------#	  
 resource "aws_s3_bucket_public_access_block" "this" {
-  for_each = {for name in var.s3: name => name if name != "media"}
+  for_each = var.s3
   bucket = "${local.project}-${random_string.s3[each.key].id}-${each.key}"  
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Create policy for CloudFront to limit S3 media bucket access
@@ -69,36 +69,12 @@ resource "aws_s3_bucket_policy" "media" {
    policy = jsonencode({
    Id = "PolicyForMediaStorageAccess"
    Statement = [
-	  {
-         Action = "s3:GetObject"
-         Effect = "Allow"
-         Principal =  "*",
-         Resource = [
-            "${aws_s3_bucket.this["media"].arn}/*.jpg",
-            "${aws_s3_bucket.this["media"].arn}/*.jpeg",
-            "${aws_s3_bucket.this["media"].arn}/*.png",
-            "${aws_s3_bucket.this["media"].arn}/*.gif",
-            "${aws_s3_bucket.this["media"].arn}/*.webp"
-         ]
-      }, 
       {
-         Action = ["s3:PutObject"],
+         Action = ["s3:GetObject", "s3:GetObjectAcl","s3:PutObject"],
          Effect = "Allow"
-         Principal =  "*",
-         Resource = [
-            "${aws_s3_bucket.this["media"].arn}",
-            "${aws_s3_bucket.this["media"].arn}/*"
-         ]
-         Condition = {
-            StringEquals = {
-                "aws:SourceVpc" = [ aws_vpc.this.id ]
+         Principal = {
+            AWS = "*"
          }
-	}
-      }, 
-      {
-         Action = ["s3:GetObject", "s3:GetObjectAcl"],
-         Effect = "Allow"
-         Principal =  "*",
          Resource = [
             "${aws_s3_bucket.this["media"].arn}",
             "${aws_s3_bucket.this["media"].arn}/*"
@@ -107,7 +83,9 @@ resource "aws_s3_bucket_policy" "media" {
       {
          Action = ["s3:GetBucketLocation", "s3:ListBucket"],
          Effect = "Allow"
-         Principal =  "*",
+         Principal = {
+            AWS = "*"
+         }
          Resource = "${aws_s3_bucket.this["media"].arn}"
       }, 
 	  ] 
@@ -126,28 +104,41 @@ resource "aws_s3_bucket_policy" "system" {
   Statement = [
     {
       Action = [
-        "s3:PutObject",
-        "s3:GetObject",
-        "s3:ListBucket"
+        "s3:PutObject"
       ],
       Effect = "Allow"
       Resource = "${aws_s3_bucket.this["system"].arn}/ALB/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
       Principal = {
-        AWS = "*",
+        AWS = [
+          data.aws_elb_service_account.current.arn
+        ]
       }
     },
     {
       Action = [
         "s3:PutObject",
-        "s3:GetObject",
-        "s3:ListBucket"
+        "s3:GetObject"
       ],
       Effect = "Allow"
       Resource = "${aws_s3_bucket.this["system"].arn}/*"
       Principal = {
-        AWS = "*",
+        AWS = [
+          aws_iam_role.codebuild.arn,
+          aws_iam_role.codepipeline.arn,
+          aws_iam_role.config.arn
+        ] 
      }
-  }
+  },
+  {
+      Action = [
+        "s3:GetBucketAcl"
+      ],
+      Effect = "Allow"
+      Resource = "${aws_s3_bucket.this["system"].arn}"
+      Principal = {
+        AWS = "*"
+     }
+  } 
 ]
 })
 }
@@ -157,17 +148,24 @@ resource "aws_s3_bucket_policy" "system" {
 resource "aws_s3_bucket_policy" "backup" {
   bucket = aws_s3_bucket.this["backup"].id
   policy = jsonencode({
-    Id      = "PolicyForBackupBucket",
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action    = ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
-        Effect    = "Allow",
-        Resource  = "${aws_s3_bucket.this["backup"].arn}/*",
-        Principal = "*",
+  Id = "PolicyForBackupBucket"
+  Version = "2012-10-17"
+  Statement = [
+    {
+      Action = [
+        "s3:PutObject"
+      ],
+      Effect = "Allow"
+      Resource = "${aws_s3_bucket.this["backup"].arn}/*"
+      Principal = {
+        AWS = [
+          aws_iam_role.codebuild.arn,
+          aws_iam_role.codepipeline.arn,
+          aws_iam_role.codedeploy.arn
+        ]
       }
-    ]
-  })
+    }
+  ]
+})
 }
-
 
