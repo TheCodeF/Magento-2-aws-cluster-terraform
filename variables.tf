@@ -153,7 +153,7 @@ variable "redis" {
   description      = "Map ElastiCache Redis configuration values"
   default  = {
     num_cache_clusters            = "1"
-    node_type                     = "cache.m6g.large"
+    node_type                     = "cache.m5.large"
     name                          = ["session", "cache"]
     engine_version                = "6.x"
     port                          = "6379"
@@ -252,5 +252,5 @@ variable "az_number" {
 
 variable "allowed_ip_addresses" {
   type    = list(string)
-  default = ["184.169.173.113/32", "157.241.11.59/32", "88.239.132.234/32"]
+  default = ["184.169.173.113/32", "157.241.11.59/32", "88.239.132.234/32", "0.0.0.0/0"]
 }
