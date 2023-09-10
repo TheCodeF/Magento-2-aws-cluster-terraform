@@ -68,7 +68,7 @@ variable "elk" {
   description      = "Map ElasticSearch configuration values"
   default  = {
     elasticsearch_version  = "7.9"
-    instance_type          = "m6g.large.elasticsearch"
+    instance_type          = "m5.large.search"
     instance_count         = "1"
     ebs_enabled            = true
     volume_type            = "gp2"
