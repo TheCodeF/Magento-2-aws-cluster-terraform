@@ -40,8 +40,8 @@ variable "ec2" {
 variable "app" {
   description      = "Map application params | Magento 2"
   default          = {
-    install          = "disabled"
-    source_repo      = "agenx/Magento-2"
+    install          = "enabled"
+    source_repo      = "TheCodeF/magento2-elaraby"
     app_version      = "2"
     cidr_block       = "172.30.0.0/16"
     brand            = "alaraby"
@@ -50,9 +50,9 @@ variable "app" {
     admin_login      = "admin"
     admin_firstname  = "Mahmoud"
     admin_lastname   = "Almasri"
-    source           = "https://github.com/agenx/Magento-2.git"
+    source           = "https://github.com/TheCodeF/magento2-elaraby.git"
     language         = "en_US"
-    currency         = "EUR"
+    currency         = "USD"
     timezone         = "UTC"
     php_version      = "8.1"
     php_packages     = "cli fpm common mysql zip gd mbstring curl xml bcmath intl soap oauth lz4 apcu"
@@ -68,7 +68,7 @@ variable "elk" {
   description      = "Map ElasticSearch configuration values"
   default  = {
     elasticsearch_version  = "7.9"
-    instance_type          = "m5.large.search"
+    instance_type          = "m5.large.elasticsearch"
     instance_count         = "1"
     ebs_enabled            = true
     volume_type            = "gp2"

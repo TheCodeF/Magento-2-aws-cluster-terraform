@@ -13,7 +13,7 @@ resource "aws_cloudfront_origin_access_identity" "this" {
 resource "aws_cloudfront_distribution" "this" {
   enabled             = true
   is_ipv6_enabled     = true
-  web_acl_id          = aws_wafv2_web_acl.this.arn
+  #web_acl_id          = aws_wafv2_web_acl.this.arn
   price_class         = "PriceClass_100"
   comment             = "${var.app["domain"]} assets"
   

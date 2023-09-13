@@ -25,8 +25,8 @@ terraform {
 
 
 provider "aws" {
-  alias  = "mesouth1"
-  region = "me-south-1"
+  alias  = "euwest1"
+  region = "eu-west-1"
   default_tags {
    tags = {
    Managed      = "terraform"

@@ -96,9 +96,14 @@ resource "aws_iam_policy" "codebuild" {
       "Sid": "AllowCodeBuildGitActionsPull",
       "Effect": "Allow",
       "Action": [
-        "codecommit:GitPull"
+        "codecommit:GitPull",
+        "ec2:DescribeSecurityGroups",
+				"ec2:DescribeSubnets",
+        "sns:Publish",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface"
       ],
-      "Resource": "${aws_codecommit_repository.app.arn}"
+      "Resource": ["${aws_codecommit_repository.app.arn}","*"] 
     },
     {
       "Sid": "AllowCodeBuildGitActionsPush",
@@ -210,10 +215,10 @@ resource "aws_iam_policy" "codepipeline" {
 			"Action": [
 				"codestar-connections:UseConnection"
 			],
-			"Resource": aws_codestarconnections_connection.github.arn,
+			"Resource": "arn:aws:codestar-connections:eu-west-1:150326183556:connection/9f4e2cfb-3cd9-4349-b98f-752e7208c4da",
 			"Condition": {
 				"ForAllValues:StringEquals": {
-					"codestar-connections:FullRepositoryId": var.app["source_repo"]
+					"codestar-connections:FullRepositoryId": "TheCodeF/magento2-elaraby"
 				}
 			}
 		},

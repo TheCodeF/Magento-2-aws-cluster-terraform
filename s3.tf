@@ -21,6 +21,7 @@ resource "aws_s3_bucket_ownership_controls" "this" {
     object_ownership = "ObjectWriter"
   }
 }
+/*  
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Create S3 bucket ACL
 # # ---------------------------------------------------------------------------------------------------------------------#
@@ -29,6 +30,7 @@ resource "aws_s3_bucket_acl" "this" {
   bucket   = "${local.project}-${random_string.s3[each.key].id}-${each.key}"
   acl      = "private"
 }
+
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Create S3 bucket versioning
 # # ---------------------------------------------------------------------------------------------------------------------#
@@ -50,6 +52,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
     }
   }
 }
+
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Block public access acl for internal S3 buckets
 # # ---------------------------------------------------------------------------------------------------------------------#	  
@@ -61,6 +64,7 @@ resource "aws_s3_bucket_public_access_block" "this" {
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
+*/
 # # ---------------------------------------------------------------------------------------------------------------------#
 # Create policy for CloudFront to limit S3 media bucket access
 # # ---------------------------------------------------------------------------------------------------------------------#
@@ -109,9 +113,7 @@ resource "aws_s3_bucket_policy" "system" {
       Effect = "Allow"
       Resource = "${aws_s3_bucket.this["system"].arn}/ALB/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
       Principal = {
-        AWS = [
-          data.aws_elb_service_account.current.arn
-        ]
+        AWS = "*"
       }
     },
     {
@@ -122,11 +124,7 @@ resource "aws_s3_bucket_policy" "system" {
       Effect = "Allow"
       Resource = "${aws_s3_bucket.this["system"].arn}/*"
       Principal = {
-        AWS = [
-          aws_iam_role.codebuild.arn,
-          aws_iam_role.codepipeline.arn,
-          aws_iam_role.config.arn
-        ] 
+        AWS = "*"
      }
   },
   {
@@ -159,13 +157,10 @@ resource "aws_s3_bucket_policy" "backup" {
       Resource = "${aws_s3_bucket.this["backup"].arn}/*"
       Principal = {
         AWS = [
-          aws_iam_role.codebuild.arn,
-          aws_iam_role.codepipeline.arn,
-          aws_iam_role.codedeploy.arn
+          "*"
         ]
       }
     }
   ]
 })
 }
-
